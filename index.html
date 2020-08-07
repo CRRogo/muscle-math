@@ -1,0 +1,186 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<title>James Lewis' Muscle Math</title>
+	<meta name="description" content="James Lewis' Muscle Math">
+	<meta name="author" content="Chris and James in America INC">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+	<style>
+		.wobbleText {
+			margin: 0;
+			font-size: 8em;
+			padding: 0;
+			color: white;
+			text-shadow: 0 0.1em 20px rgba(0, 0, 0, 1), 0.05em -0.03em 0 rgba(0, 0, 0, 1),
+				0.05em 0.005em 0 rgba(0, 0, 0, 1), 0em 0.08em 0 rgba(0, 0, 0, 1),
+				0.05em 0.08em 0 rgba(0, 0, 0, 1), 0px -0.03em 0 rgba(0, 0, 0, 1),
+				-0.03em -0.03em 0 rgba(0, 0, 0, 1), -0.03em 0.08em 0 rgba(0, 0, 0, 1), -0.03em 0 0 rgba(0, 0, 0, 1);
+		}
+
+		.wobbleText span {
+			transform: scale(0.9);
+			display: inline-block;
+		}
+
+		.wobbleText span:first-child {
+			animation: bop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards infinite alternate;
+		}
+
+		.wobbleText span:last-child {
+			animation: bopB 1s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards infinite alternate;
+		}
+
+
+		@keyframes bop {
+			0% {
+				transform: scale(0.9);
+			}
+
+			50%,
+			100% {
+				transform: scale(1);
+			}
+		}
+
+		@keyframes bopB {
+			0% {
+				transform: scale(0.9);
+			}
+
+			80%,
+			100% {
+				transform: scale(1) rotateZ(-3deg);
+			}
+		}
+
+		body {
+			padding-top: 30px;
+			background-color: #0ad5f5;
+
+			/* The image used */
+			background-image: url("images/jams-bg-1.jpg");
+
+			/* Full height */
+			height: 100%;
+
+			/* Center and scale the image nicely */
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+		}
+
+		.MMTitle {
+      font-size: 12vw;
+    }
+
+    @media screen and (min-width: 1000px) {
+      .MMTitle {
+        font-size: 7.8em;
+      }
+    }
+	</style>
+
+</head>
+
+<body>
+
+	<div class="container-fluid text-center">
+		<h1>James Lewis'</h1>
+		<h1 class="MMTitle  wobbleText"><span>MUSCLE</span><br><span>MATH</span></h1>
+		<div class="row">
+			<div id="title" class="col-md-8 offset-md-2">
+
+				<!-- a bootstrap form -->
+				<form onsubmit="return calcWeights()">
+					<div class="form-group" id="weightCalcForm">
+						<label for=" goalWeight"></label>
+						<input type="number" step="1" class="form-control" id="goalWeight" aria-describedby="weightHelp"
+							placeholder="0">
+						<small id="weightHelp" class="form-text text-muted">How many LBS u gonna lift BRAH?</small>
+					</div>
+					<button type="submit" class="btn btn-primary">Calculate</button>
+				</form>
+				<br><br>
+				<h3 id="resultInfo"></h3>
+
+			</div>
+		</div>
+	</div>
+
+
+	<!-- an empty div with id resultInfo.  ready to be populated with the results of the calculations-->
+
+
+	<script>
+
+		// The weight of the bar
+		const barWeight = 45;
+		// An array containing the weights available at your gym.  Smallest to largest.
+		const gymWeights = [2.5, 5, 10, 25, 35, 45];
+
+		// This function gets called when the submit button is clicked
+		function calcWeights() {
+			// an array containing the weights the app will suggest that you use
+			var myWeights = [];
+			// gets the value from 
+			var goalWeight = document.getElementById("goalWeight").value;
+
+			// Validation (No goalweight, or goalweight)
+			if (!goalWeight || goalWeight < 45) {
+				alert("Bad input");
+				// Since the input is bad.. dont do anything else.. we are DONE HERE!
+				return;
+			}
+
+			// This is debug code, hit F12 in your browser and view the console to see this output
+			console.log(goalWeight);
+
+			// temp variable to hold the current weight
+			var currentWeight = barWeight;
+			// Do the math
+
+			// start with heaviest weight and work down the list
+			for (i = gymWeights.length; i >= 0; i--) {
+				//add as many of this weight as you can
+				while ((currentWeight + (gymWeights[i] * 2)) <= goalWeight) {
+					// add it to your weights array, and keep track of the new current weight
+					myWeights.push(gymWeights[i]);
+					currentWeight += (gymWeights[i] * 2)
+				}
+			}
+
+			var nicelyFormattedText = "Place these weights on each side of the " + barWeight + "lb bar, in order to achieve a weight of: " + currentWeight + ". <br>";
+
+			for (i = 0; i < myWeights.length; i++) {
+				nicelyFormattedText += myWeights[i] + "lbs "
+			}
+
+			// put the nicely formatted string into the DOM
+			document.getElementById("resultInfo").innerHTML = nicelyFormattedText;
+
+			console.log(myWeights)
+			return false;
+		}
+
+	</script>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+		integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+		crossorigin="anonymous"></script>
+
+</body>
+
+</html>

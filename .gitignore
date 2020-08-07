@@ -1,0 +1,6 @@
+server/node_modules/
+desktop.ini
+**/desktop.ini
+**/client/test.html
+**/server/log.log
+**/.well-known/*

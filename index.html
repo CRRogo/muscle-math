@@ -64,67 +64,99 @@
 		body {
 			padding-top: 30px;
 			background-color: #0ad5f5;
-
-			/* The image used */
-			background-image: url("images/jams-bg-1.jpg");
-
-			/* Full height */
-			height: 100%;
-
-			/* Center and scale the image nicely */
-			background-position: center;
-			background-repeat: no-repeat;
-			background-size: cover;
 		}
 
 		.MMTitle {
-      font-size: 12vw;
-    }
+			font-size: 12vw;
+		}
 
-    @media screen and (min-width: 1000px) {
-      .MMTitle {
-        font-size: 7.8em;
-      }
-    }
+		@media screen and (min-width: 1000px) {
+			.MMTitle {
+				font-size: 7.8em;
+			}
+		}
+
+		#backgroundContainer {
+			z-index: 1;
+		}
+
+		#backgroundContainer:before {
+			content: "";
+			position: absolute;
+			z-index: -1;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background-image: url("images/face/face10.png");
+			background-repeat: no-repeat;
+			background-size: 100%;
+			opacity: 0.4;
+			filter: alpha(opacity=40);
+			height: 100%;
+			width: 100%;
+		}
+
+		.main {
+			height: 100%;
+			width: 100%;
+			margin: auto;
+			z-index: -1;
+			opacity: 1;
+			filter: alpha(opacity=100);
+		}
+
+		input:focus::placeholder {
+			color: transparent;
+		}
 	</style>
 
 </head>
 
 <body>
+	<div id="backgroundContainer">
+		<div class="main">
+			<div class="container-fluid text-center">
+				<h1>James Lewis'</h1>
+				<h1 class="MMTitle  wobbleText"><span>MUSCLE</span><br><span>MATH</span></h1>
+				<div class="row">
+					<div id="title" class="col-md-8 offset-md-2">
 
-	<div class="container-fluid text-center">
-		<h1>James Lewis'</h1>
-		<h1 class="MMTitle  wobbleText"><span>MUSCLE</span><br><span>MATH</span></h1>
-		<div class="row">
-			<div id="title" class="col-md-8 offset-md-2">
+						<!-- a bootstrap form -->
+						<form onsubmit="return calcWeights()">
+							<div class="form-group" id="weightCalcForm">
+								<label for=" goalWeight"></label>
+								<input type="number" step="1" class="form-control" id="goalWeight"
+									aria-describedby="weightHelp" required="true" placeholder="0">
+								<small id="weightHelp" class="form-text text-muted">How many LBS u gonna lift
+									BRAH?</small>
+							</div>
+							<button type="submit" class="btn btn-primary">Calculate</button>
+						</form>
+						<br><br>
+						<h3 id="resultInfo"></h3>
+						<h3 id="weightGraphics"></h3>
 
-				<!-- a bootstrap form -->
-				<form onsubmit="return calcWeights()">
-					<div class="form-group" id="weightCalcForm">
-						<label for=" goalWeight"></label>
-						<input type="number" step="1" class="form-control" id="goalWeight" aria-describedby="weightHelp"
-							placeholder="0">
-						<small id="weightHelp" class="form-text text-muted">How many LBS u gonna lift BRAH?</small>
 					</div>
-					<button type="submit" class="btn btn-primary">Calculate</button>
-				</form>
-				<br><br>
-				<h3 id="resultInfo"></h3>
-
+				</div>
 			</div>
+
+
+			<!-- an empty div with id resultInfo.  ready to be populated with the results of the calculations-->
 		</div>
 	</div>
-
-
-	<!-- an empty div with id resultInfo.  ready to be populated with the results of the calculations-->
-
 
 	<script>
 
 		// The weight of the bar
-		const barWeight = 45;
+		const barWeight = 45
 		// An array containing the weights available at your gym.  Smallest to largest.
-		const gymWeights = [2.5, 5, 10, 25, 35, 45];
+		const gymWeights = [{ lbs: 2.5, icon: "images/plate/2_5p.png" , size: 55},
+		{ lbs: 5, icon: "images/plate/5lbs_b.png" , size: 60},
+		{ lbs: 10, icon: "images/plate/10lbs_g.png" , size: 65},
+		{ lbs: 25, icon: "images/plate/25lbs_y.png" , size: 70},
+		{ lbs: 35, icon: "images/plate/35lbs_o.png" , size: 75},
+		{ lbs: 45, icon: "images/plate/45lbs_r.png" , size: 80}]
 
 		// This function gets called when the submit button is clicked
 		function calcWeights() {
@@ -133,11 +165,12 @@
 			// gets the value from 
 			var goalWeight = document.getElementById("goalWeight").value;
 
-			// Validation (No goalweight, or goalweight)
-			if (!goalWeight || goalWeight < 45) {
-				alert("Bad input");
+			// Validation TOO HEAVY
+			if (goalWeight > 10000) {
+				document.getElementById("resultInfo").innerText = "Error: Nobody can lift more than James";
+				document.getElementById("weightGraphics").innerHTML = ""
 				// Since the input is bad.. dont do anything else.. we are DONE HERE!
-				return;
+				return false;
 			}
 
 			// This is debug code, hit F12 in your browser and view the console to see this output
@@ -148,23 +181,39 @@
 			// Do the math
 
 			// start with heaviest weight and work down the list
-			for (i = gymWeights.length; i >= 0; i--) {
+			for (i = gymWeights.length - 1; i >= 0; i--) {
 				//add as many of this weight as you can
-				while ((currentWeight + (gymWeights[i] * 2)) <= goalWeight) {
+				while ((currentWeight + (gymWeights[i].lbs * 2)) <= goalWeight) {
 					// add it to your weights array, and keep track of the new current weight
 					myWeights.push(gymWeights[i]);
-					currentWeight += (gymWeights[i] * 2)
+					currentWeight += (gymWeights[i].lbs * 2)
 				}
 			}
 
-			var nicelyFormattedText = "Place these weights on each side of the " + barWeight + "lb bar, in order to achieve a weight of: " + currentWeight + ". <br>";
+			var nicelyFormattedText = "Place these weights on each side of the " + barWeight + "lb bar, in order to achieve a weight of: " + currentWeight;
 
-			for (i = 0; i < myWeights.length; i++) {
-				nicelyFormattedText += myWeights[i] + "lbs "
-			}
 
 			// put the nicely formatted string into the DOM
-			document.getElementById("resultInfo").innerHTML = nicelyFormattedText;
+			document.getElementById("resultInfo").innerText = nicelyFormattedText;
+
+			// Clear it out first.
+			document.getElementById("weightGraphics").innerHTML = ""
+
+			// Validation Not enough weight to put anything on the bar
+			if (goalWeight < barWeight + (gymWeights[0].lbs * 2)) {
+				document.getElementById("weightGraphics").innerText = "(No weights needed)"
+			}
+			else {
+				for (i = 0; i < myWeights.length; i++) {
+					// add image
+					var elem = document.createElement("img");
+					elem.setAttribute("src", myWeights[i].icon);
+					elem.setAttribute("height", myWeights[i].size);
+					elem.setAttribute("width", myWeights[i].size);
+					elem.setAttribute("alt", myWeights[i].lbs);
+					document.getElementById("weightGraphics").appendChild(elem);
+				}
+			}
 
 			console.log(myWeights)
 			return false;

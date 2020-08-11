@@ -109,6 +109,27 @@
 		input:focus::placeholder {
 			color: transparent;
 		}
+
+		.weightContainer {
+			position: relative;
+			text-align: center;
+			color: white;
+			display: inline-block;
+		}
+
+		.weightContainer img {
+			float: left;
+		}
+
+		.bottom-left {
+			position: absolute;
+			bottom: 4px;
+			left: 6px;
+			color: white;
+			-webkit-text-stroke: 2px black;
+    font-weight: 800;
+    font-size: 28px;
+		}
 	</style>
 
 </head>
@@ -151,12 +172,12 @@
 		// The weight of the bar
 		const barWeight = 45
 		// An array containing the weights available at your gym.  Smallest to largest.
-		const gymWeights = [{ lbs: 2.5, icon: "images/plate/2_5p.png" , size: 55},
-		{ lbs: 5, icon: "images/plate/5lbs_b.png" , size: 60},
-		{ lbs: 10, icon: "images/plate/10lbs_g.png" , size: 65},
-		{ lbs: 25, icon: "images/plate/25lbs_y.png" , size: 70},
-		{ lbs: 35, icon: "images/plate/35lbs_o.png" , size: 75},
-		{ lbs: 45, icon: "images/plate/45lbs_r.png" , size: 80}]
+		const gymWeights = [{ lbs: 2.5, icon: "images/plate/2_5p.png", size: 55 },
+		{ lbs: 5, icon: "images/plate/5lbs_b.png", size: 60 },
+		{ lbs: 10, icon: "images/plate/10lbs_g.png", size: 65 },
+		{ lbs: 25, icon: "images/plate/25lbs_y.png", size: 70 },
+		{ lbs: 35, icon: "images/plate/35lbs_o.png", size: 75 },
+		{ lbs: 45, icon: "images/plate/45lbs_r.png", size: 80 }]
 
 		// This function gets called when the submit button is clicked
 		function calcWeights() {
@@ -206,12 +227,25 @@
 			else {
 				for (i = 0; i < myWeights.length; i++) {
 					// add image
-					var elem = document.createElement("img");
-					elem.setAttribute("src", myWeights[i].icon);
-					elem.setAttribute("height", myWeights[i].size);
-					elem.setAttribute("width", myWeights[i].size);
-					elem.setAttribute("alt", myWeights[i].lbs);
-					document.getElementById("weightGraphics").appendChild(elem);
+
+					var container = document.createElement("div")
+					container.setAttribute("class", "weightContainer")
+
+					var elem = document.createElement("img")
+					elem.setAttribute("src", myWeights[i].icon)
+					elem.setAttribute("height", myWeights[i].size)
+					elem.setAttribute("width", myWeights[i].size)
+					elem.setAttribute("alt", myWeights[i].lbs)
+
+					container.appendChild(elem)
+
+					var text = document.createElement("div")
+					text.setAttribute("class", "bottom-left")
+					text.innerText = myWeights[i].lbs
+
+					container.appendChild(text)
+
+					document.getElementById("weightGraphics").appendChild(container)
 				}
 			}
 
